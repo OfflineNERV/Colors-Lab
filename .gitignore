@@ -1,0 +1,13 @@
+# Real database credentials -- never commit this. Copy api/config.example.php
+# to api/config.php and fill in your own values instead.
+api/config.php
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+__MACOSX/
+
+# Logs
+*.log
