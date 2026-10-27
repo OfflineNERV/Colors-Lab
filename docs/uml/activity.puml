@@ -1,0 +1,60 @@
+@startuml activity
+' Activity Diagram - COLORS web application (Labs 1-3)
+
+start
+:User opens index.html;
+:User enters username and password, clicks "Do It";
+:doLogin() sends POST to Login.php {login, password};
+:Login.php queries Users
+(Login = ? AND Password = ?);
+
+if (Matching user found?) then (no)
+  :Login.php returns {id:0, error:"No Records Found"};
+  :Show "User/Password combination incorrect";
+  stop
+else (yes)
+  :Login.php returns {id, firstName, lastName};
+  :saveCookie() (expires in 20 min);
+  :Redirect to color.html;
+endif
+
+:readCookie() on page load;
+if (Valid userId in cookie?) then (no)
+  :Redirect to index.html;
+  stop
+else (yes)
+endif
+
+repeat
+  :User chooses an action;
+  switch (Action?)
+  case (Add Color)
+    :User enters color, clicks "Add Color";
+    :addColor() sends POST to AddColor.php {color, userId};
+    :AddColor.php INSERTs into Colors (UserId, Name);
+    :Show "Color has been added";
+  case (Search Color)
+    :User enters search text, clicks "Search Color";
+    :searchColor() sends POST to SearchColors.php {search, userId};
+    :SearchColors.php SELECTs Name FROM Colors
+    WHERE Name LIKE %search% AND UserID = ?;
+    if (Matches found?) then (yes)
+      :Return {results:[...], error:""};
+    else (no)
+      :Return {error:"No Records Found"} (no results array);
+    endif
+    :Show "Color(s) has been retrieved";
+    if (results array present?) then (yes)
+      :Display colors in colorList;
+    else (no)
+      :JS error reading results.length
+      (colorList is not updated);
+    endif
+  case (Log Out)
+    :doLogout() clears user data and expires cookie;
+    :Redirect to index.html;
+    stop
+  endswitch
+repeat while (Stay on color.html?) is (yes)
+stop
+@enduml
