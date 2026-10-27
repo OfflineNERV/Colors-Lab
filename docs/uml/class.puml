@@ -1,0 +1,103 @@
+@startuml class
+' Class Diagram - COLORS web application (Labs 1-3)
+' The app has no OOP classes; each file/table is modeled as a class with a stereotype.
+skinparam classAttributeIconSize 0
+hide empty members
+
+package "Frontend (public/)" {
+  class "index.html" as Index <<page>> {
+    loginName : input
+    loginPassword : input
+    loginResult : span
+  }
+
+  class "color.html" as ColorPage <<page>> {
+    userName : span
+    searchText : input
+    colorSearchResult : span
+    colorList : p
+    colorText : input
+    colorAddResult : span
+  }
+
+  class "code.js" as CodeJS <<script>> {
+    urlBase : String {const}
+    extension : String = "php" {const}
+    userId : int
+    firstName : String
+    lastName : String
+    + doLogin() : void
+    + saveCookie() : void
+    + readCookie() : void
+    + doLogout() : void
+    + addColor() : void
+    + searchColor() : void
+  }
+
+  class "md5.js" as MD5 <<script>> {
+    + md5(string, key, raw) : String
+  }
+}
+
+package "Backend (api/)" {
+  class "Login.php" as Login <<endpoint>> {
+    + getRequestInfo() : array
+    + sendResultInfoAsJson(obj) : void
+    + returnWithError(err) : void
+    + returnWithInfo(firstName, lastName, id) : void
+  }
+
+  class "AddColor.php" as AddColor <<endpoint>> {
+    + getRequestInfo() : array
+    + sendResultInfoAsJson(obj) : void
+    + returnWithError(err) : void
+  }
+
+  class "SearchColors.php" as SearchColors <<endpoint>> {
+    + getRequestInfo() : array
+    + sendResultInfoAsJson(obj) : void
+    + returnWithError(err) : void
+    + returnWithInfo(searchResults) : void
+  }
+
+  class "config.php" as Config <<config>> {
+    DB_HOST
+    DB_USER
+    DB_PASSWORD
+    DB_NAME = "COP4331"
+  }
+}
+
+package "Database (MySQL COP4331)" {
+  class Users <<table>> {
+    ID : int
+    firstName : varchar
+    lastName : varchar
+    Login : varchar
+    Password : varchar
+  }
+
+  class Colors <<table>> {
+    UserId : int
+    Name : varchar
+  }
+}
+
+Index ..> CodeJS : <<include>>
+Index ..> MD5 : <<include>>
+ColorPage ..> CodeJS : <<include>>
+
+CodeJS ..> Login : POST JSON
+CodeJS ..> AddColor : POST JSON
+CodeJS ..> SearchColors : POST JSON
+
+Login ..> Config : require_once
+AddColor ..> Config : require_once
+SearchColors ..> Config : require_once
+
+Login ..> Users : SELECT
+AddColor ..> Colors : INSERT
+SearchColors ..> Colors : SELECT
+
+Users "1" -- "0..*" Colors : owns >
+@enduml
