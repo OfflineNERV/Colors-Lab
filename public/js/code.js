@@ -1,3 +1,4 @@
+/* exported doLogin, readCookie, doLogout, addColor, searchColor */
 // Base URL for the LAMPAPI backend. Update this to point at wherever the
 // api/ folder is actually deployed, e.g.:
 //   const urlBase = 'http://123.45.67.89/LAMPAPI';
@@ -117,7 +118,7 @@ function addColor()
 	let newColor = document.getElementById("colorText").value;
 	document.getElementById("colorAddResult").innerHTML = "";
 
-	let tmp = {color:newColor,userId,userId};
+	let tmp = {color:newColor,userId};
 	let jsonPayload = JSON.stringify( tmp );
 
 	let url = urlBase + '/AddColor.' + extension;

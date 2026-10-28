@@ -11,3 +11,5 @@ __MACOSX/
 
 # Logs
 *.log
+
+node_modules/
