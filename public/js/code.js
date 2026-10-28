@@ -1,9 +1,10 @@
+/* global module */
 /* exported doLogin, readCookie, doLogout, addColor, searchColor */
 // Base URL for the LAMPAPI backend. Update this to point at wherever the
 // api/ folder is actually deployed, e.g.:
 //   const urlBase = 'http://123.45.67.89/LAMPAPI';
 //   const urlBase = 'http://your-domain.com/LAMPAPI';
-const urlBase = 'http://YOUR_SERVER_ADDRESS/LAMPAPI';
+const urlBase = 'http://tzpoosd.com/LAMPAPI';
 const extension = 'php';
 
 let userId = 0;
@@ -113,10 +114,21 @@ function doLogout()
 	window.location.href = "index.html";
 }
 
+function isValidColorName(name)
+{
+	return typeof name === "string" && name.trim().length > 0 && name.trim().length <= 50;
+}
+
 function addColor()
 {
 	let newColor = document.getElementById("colorText").value;
 	document.getElementById("colorAddResult").innerHTML = "";
+
+	if( !isValidColorName(newColor) )
+	{
+		document.getElementById("colorAddResult").innerHTML = "Invalid color name";
+		return;
+	}
 
 	let tmp = {color:newColor,userId};
 	let jsonPayload = JSON.stringify( tmp );
@@ -187,4 +199,9 @@ function searchColor()
 		document.getElementById("colorSearchResult").innerHTML = err.message;
 	}
 
+}
+
+if (typeof module !== "undefined")
+{
+	module.exports = { isValidColorName };
 }

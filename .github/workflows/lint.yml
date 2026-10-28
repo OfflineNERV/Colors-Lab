@@ -1,11 +1,11 @@
-name: Lint
+name: Lint and Test
 
 on:
   push:
   pull_request:
 
 jobs:
-  lint:
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,3 +16,4 @@ jobs:
       - run: npm run lint:html
       - run: npm run lint:css
       - run: npm run lint:js
+      - run: npm test
